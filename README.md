@@ -1,6 +1,13 @@
 # 5a_Create_Socket_for_HTTP_for_webpage_upload_and_download
+
+## NAME : Thaarakeshwar
+
+## REG NUMBER : 212225040466
+
 ## AIM :
+
 To write a PYTHON program for socket for HTTP for web page upload and download
+
 ## Algorithm
 
 1.Start the program.
@@ -15,7 +22,61 @@ To write a PYTHON program for socket for HTTP for web page upload and download
 <BR>
 6.Stop the program
 <BR>
+
 ## Program 
+
+### main.py
+
+```python
+import socket
+
+def send_request(host, port, request):
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect((host, port))
+
+    s.sendall(request.encode())
+    response = s.recv(4096)
+
+    print(response.decode())
+    s.close()
+
+host = "example.com"
+port = 80
+
+request = "GET / HTTP/1.1\r\nHost: example.com\r\n\r\n"
+
+send_request(host, port, request)
+```
+### text.html
+
+```python
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple HTML Page</title>
+</head>
+<body>
+
+    <h1>Welcome to HTML</h1>
+    <p>This is a simple HTML file.</p>
+
+    <button onclick="showMessage()">Click Me</button>
+
+    <script>
+        function showMessage() {
+            alert("Hello World!");
+        }
+    </script>
+
+</body>
+</html>
+```
+
 ## OUTPUT
+
+<img width="1236" height="728" alt="image" src="https://github.com/user-attachments/assets/e97ddc48-d497-479a-91fc-136fe0077784" />
+
+
 ## Result
+
 Thus the socket for HTTP for web page upload and download created and Executed
