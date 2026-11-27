@@ -25,56 +25,67 @@ To write a PYTHON program for socket for HTTP for web page upload and download
 
 ## Program 
 
-### main.py
+### SERVER
 
 ```python
+
 import socket
-
-def send_request(host, port, request):
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect((host, port))
-
-    s.sendall(request.encode())
-    response = s.recv(4096)
-
-    print(response.decode())
-    s.close()
-
-host = "example.com"
-port = 80
-
-request = "GET / HTTP/1.1\r\nHost: example.com\r\n\r\n"
-
-send_request(host, port, request)
+s = socket.socket()
+s.bind(("localhost",8081))
+s.listen(1)
+print("Server running...")
+while True:
+    c,addr = s.accept()
+    request = c.recv(1024).decode()
+    print("Request received")
+    if "GET" in request:
+        f = open("index.html","r")
+        data = f.read()
+        f.close()
+        response = "HTTP/1.1 200 OK\n\n" + data
+        c.send(response.encode())
+    elif "POST" in request:
+        data = request.split("\n\n")[1]
+        
+        f = open("upload.txt","w")
+        f.write(data)
+        f.close()
+        c.send("HTTP/1.1 200 OK\n\nFile Uploaded".encode())
+    c.close()
 ```
-### text.html
+### CLIENT
 
 ```python
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Simple HTML Page</title>
-</head>
-<body>
 
-    <h1>Welcome to HTML</h1>
-    <p>This is a simple HTML file.</p>
-
-    <button onclick="showMessage()">Click Me</button>
-
-    <script>
-        function showMessage() {
-            alert("Hello World!");
-        }
-    </script>
-
-</body>
-</html>
+import socket
+s = socket.socket()
+s.connect(("localhost",8081))
+ch = input("1.Download 2.Upload : ")
+if ch == "1":
+    req = "GET / HTTP/1.1\nHost: localhost\n\n"
+    s.send(req.encode())
+    data = s.recv(4096)
+    print(data.decode())
+else:
+    msg = input("Enter data to upload: ")
+    req = "POST / HTTP/1.1\nHost: localhost\n\n" + msg
+    s.send(req.encode())
+    data = s.recv(1024)
+    print(data.decode())
+s.close()
 ```
 
 ## OUTPUT
 
-<img width="1236" height="728" alt="image" src="https://github.com/user-attachments/assets/e97ddc48-d497-479a-91fc-136fe0077784" />
+## SERVER
+
+<img width="1033" height="287" alt="image" src="https://github.com/user-attachments/assets/fb8663eb-0712-4fc8-ad93-00f8d86f1a1d" />
+
+
+## CLIENT
+
+<img width="1037" height="463" alt="image" src="https://github.com/user-attachments/assets/98507039-2809-4595-8139-1fa8f3ac44f0" />
+
 
 
 ## Result
